@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -86,5 +87,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
-
 app.Run();
+
