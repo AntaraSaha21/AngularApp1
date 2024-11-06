@@ -22,15 +22,7 @@ export function tokenGetter() {
   ],
   imports: [
     BrowserModule, HttpClientModule,
-    AppRoutingModule, FormsModule,
-    JwtModule.forRoot({
-      config: {
-        tokenGetter: tokenGetter,
-        allowedDomains: ['localhost:5001'], // Adjust to your API domain
-        disallowedRoutes: ['localhost:5001/api/auth/login']
-      }
-    })
-
+    AppRoutingModule, FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
