@@ -1,0 +1,38 @@
+<h2>My Products</h2>
+
+<div>
+    <label for="ProductName">Grossary name: </label>
+    <input id="ProductName" #ProductName />
+
+    <label for="ProductQuantity">Grossary Quantity: </label>
+    <input id="ProductQuantity" #ProductQuantity type="number" />
+
+    <label for="ProductEAN">Grossary EAN: </label>
+    <input id="ProductEAN" #ProductEAN />
+
+    <!-- (click) passes input value to add() and then clears the input -->
+    <button type="button" class="add-button"
+            (click)="add(ProductName.value, +ProductQuantity.value, ProductEAN.value);
+                      ProductName.value=''; ProductQuantity.value=''; ProductEAN.value=''">
+        Add Product
+    </button>
+</div>
+
+<ul class="Products">
+    <li *ngFor="let Product of GetProducts">
+        <a routerLink="/detail/{{Product.id}}">
+            {{Product.name}}
+        </a>
+        {{Product.quantity}} && {{Product.ean}}
+        <button type="button" class="delete" title="delete Product"
+                (click)="delete(Product.id)">
+            x
+        </button>
+
+        <button type="button" class="add-button"
+                (click)="Product ? update(Product.id, ProductName.value, +ProductQuantity.value, ProductEAN.value) : null;
+                  ProductName.value=''; ProductQuantity.value=''; ProductEAN.value='';Product.id=undefined;">
+            Edit{{Product.id}}
+        </button>
+    </li>
+</ul>

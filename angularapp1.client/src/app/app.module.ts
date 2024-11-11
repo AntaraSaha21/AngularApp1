@@ -4,10 +4,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
-import { ProductsComponent } from './components/products/products.component';
+import { ProductV1Component } from './components/products/productV1.component';
 import { FormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './components/login/login.component';
+import { ProductV2Component } from './components/productv2/productV2.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -17,8 +18,9 @@ export function tokenGetter() {
   declarations: [
     AppComponent,
     HomeComponent,
-    ProductsComponent,
-    LoginComponent
+    ProductV1Component,
+    LoginComponent,
+    ProductV2Component
   ],
   imports: [
     BrowserModule, HttpClientModule,

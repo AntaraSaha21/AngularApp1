@@ -1,6 +1,7 @@
 ﻿using AngularApp1.Server.Models;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 namespace AngularApp1.Server.Service
@@ -133,9 +134,32 @@ namespace AngularApp1.Server.Service
             return isExists;
         }
 
-        public Task<IEnumerable<GetProducts>> GetAll()
+        public async Task<IEnumerable<GetProducts>> GetAll()
         {
-            throw new NotImplementedException();
+            string sqlGetById = "SELECT Id,Name,Quantity,EAN FROM Products WHERE ISNULL(Id,0) <> 0";
+            List<GetProducts> productsList = new List<GetProducts>();
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand(sqlGetById, connection);
+
+                await connection.OpenAsync();
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        var product = new GetProducts
+                        {
+                            Id = (int)reader["Id"],
+                            Name = reader["Name"].ToString(),
+                            Quantity = (int)reader["Quantity"],
+                            EAN = reader["EAN"].ToString()
+                        };
+                        productsList.Add(product);
+                    }
+                }
+            }
+            return productsList;
         }
     }
 }

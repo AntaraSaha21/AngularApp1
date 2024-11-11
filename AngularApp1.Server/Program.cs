@@ -1,5 +1,6 @@
 using AngularApp1.Server.Models;
 using AngularApp1.Server.Service;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,14 @@ using System.Security.Cryptography;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add API versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true; // Optional: adds version info in response headers
+});
 
 // Add services to the container.
 builder.Services.AddCors(options =>
@@ -68,6 +77,17 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+//app.MapGet("/api/v{version}/products", (string version) =>
+//{
+//    return version == "1.0" ? "This is version 1.0" : "This is version 2.0";
+//});
+
+//app.MapGet("/api/v{version}/products/details", (string version) =>
+//{
+//    return version == "1.0" ? "Details for version 1.0" : "Details for version 2.0 with new features.";
+//});
+
 
 app.UseDefaultFiles();
 app.UseStaticFiles();

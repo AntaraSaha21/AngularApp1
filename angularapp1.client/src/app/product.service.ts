@@ -5,11 +5,13 @@ import { Observable, tap, catchError, of, map } from 'rxjs';
 import { Product } from './product';
 import { GetProducts } from './GetProducts';
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private ProductsUrl = 'https://localhost:7285/api/Products';
+  private baseUrl = 'https://localhost:7285/api';
+  private endpoint = 'Products';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -19,15 +21,16 @@ export class ProductService {
     private messageService:MessageService
   ) { }
 
-  getProducts(): Observable<GetProducts[]> {
-    return this.http.get<GetProducts[]>(this.ProductsUrl)
+  getProducts(version: string): Observable<GetProducts[]> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint + version}`;
+    return this.http.get<GetProducts[]>(url)
       .pipe(
         tap(_ => this.log('fetched Products')),
         catchError(this.handleError<GetProducts[]>('getProducts', []))
       );
   }
-  getProductNo404<Data>(id: number): Observable<GetProducts> {
-    const url = `${this.ProductsUrl}/?id=${id}`;
+  getProductNo404<Data>(id: number, version: string): Observable<GetProducts> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint + version}/?id=${id}`;
     return this.http.get<GetProducts[]>(url)
       .pipe(
         map(Products => Products[0]), // returns a {0|1} element array
@@ -38,33 +41,34 @@ export class ProductService {
         catchError(this.handleError<GetProducts>(`getProduct id=${id}`))
       );
   }
-  getProduct(id: number): Observable<GetProducts> {
-    const url = `${this.ProductsUrl}/${id}`;
+  getProduct(id: number, version: string): Observable<GetProducts> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint+version}/${id}`;
     return this.http.get<GetProducts>(url).pipe(
       tap(_ => this.log(`fetched Product id=${id}`)),
       catchError(this.handleError<GetProducts>(`getProduct id=${id}`))
     );
   }
-  searchProducts(term: string): Observable<Product[]> {
+  searchProducts(term: string, version: string): Observable<Product[]> {
     if (!term.trim()) {
       // if not search term, return empty Product array.
       return of([]);
     }
-    return this.http.get<Product[]>(`${this.ProductsUrl}/?name=${term}`).pipe(
+    return this.http.get<Product[]>(`${this.baseUrl}/${version}/${this.endpoint + version}/?name=${term}`).pipe(
       tap(x => x.length ?
         this.log(`found Products matching "${term}"`) :
         this.log(`no Products matching "${term}"`)),
       catchError(this.handleError<Product[]>('searchProducts', []))
     );
   }
-  addProduct(Product: Product): Observable<Product> {
-    return this.http.post<Product>(this.ProductsUrl, Product, this.httpOptions).pipe(
+  addProduct(Product: Product, version: string): Observable<Product> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint + version}`;
+    return this.http.post<Product>(url, Product, this.httpOptions).pipe(
       tap(_ => this.log('Added Products')),
       catchError(this.handleError<Product>('addProduct'))
     );
   }
-  deleteProduct(id: number): Observable<Product> {
-    const url = `${this.ProductsUrl}/${id}`;
+  deleteProduct(id: number, version: string): Observable<Product> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint + version}/${id}`;
 
     return this.http.delete<Product>(url, this.httpOptions).pipe(
       tap(_ => this.log(`deleted Product id=${id}`)),
@@ -72,8 +76,8 @@ export class ProductService {
     );
   }
 
-  updateProduct(Product: GetProducts): Observable<Product> {
-    const url = `${this.ProductsUrl}/${Product.id}`;
+  updateProduct(Product: GetProducts, version: string): Observable<Product> {
+    const url = `${this.baseUrl}/${version}/${this.endpoint + version}/${Product.id}`;
     return this.http.put<Product>(url, Product, this.httpOptions).pipe(
       tap(updatedProduct => this.log(`Updated Product id`)),
       catchError(this.handleError<Product>('updateProduct'))

@@ -8,16 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using AngularApp1.Server.Models;
 using AngularApp1.Server.Service;
 using AngularApp1.Server.CustomExceptions;
+using Asp.Versioning;
 
 namespace AngularApp1.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsV1Controller : ControllerBase
     {
         private readonly IProductsService _service;
 
-        public ProductsController(IProductsService service)
+        public ProductsV1Controller(IProductsService service)
         {
             _service = service;
         }
@@ -92,13 +94,12 @@ namespace AngularApp1.Server.Controllers
             {
                 await _service.createProduct(products);
 
-                return CreatedAtAction("GetProducts", products);
+                return CreatedAtAction(nameof(GetProducts), new { version = "1.0", id = products.Id }, products);
             }
             catch(ApiException ex)
             {
                 return StatusCode(ex.StatusCode,ex.Message);
-            }
-             
+            } 
         }
 
         [HttpDelete("{id}")]
