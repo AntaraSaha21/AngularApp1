@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { JwtModule } from '@auth0/angular-jwt';
 import { LoginComponent } from './components/login/login.component';
 import { ProductV2Component } from './components/productv2/productV2.component';
+import { ProductVersionsComponent } from './components/product-versions/product-versions.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -20,7 +21,8 @@ export function tokenGetter() {
     HomeComponent,
     ProductV1Component,
     LoginComponent,
-    ProductV2Component
+    ProductV2Component,
+    ProductVersionsComponent
   ],
   imports: [
     BrowserModule, HttpClientModule,

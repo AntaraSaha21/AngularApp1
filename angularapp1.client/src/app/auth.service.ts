@@ -12,7 +12,7 @@ export class AuthService {
     return this.http.post<any>(`${this.loginUrl}/login`, { username, password })
       .subscribe(response => {
         localStorage.setItem('token', response.token);
-        this.router.navigate(['/productV1']);
+        this.router.navigate(['/productVersion']);
       });
   }
 
