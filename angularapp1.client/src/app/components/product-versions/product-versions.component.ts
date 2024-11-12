@@ -14,4 +14,8 @@ export class ProductVersionsComponent {
   RedirectV2(): void {
     this.router.navigate(['/productV2']);
   }
+  Logout(): void {
+    localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
 }
